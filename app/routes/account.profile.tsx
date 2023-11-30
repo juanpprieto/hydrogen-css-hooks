@@ -13,6 +13,7 @@ import {
   useOutletContext,
   type MetaFunction,
 } from '@remix-run/react';
+import hooks from '../css-hooks';
 
 export type ActionResponse = {
   error: string | null;
@@ -163,7 +164,12 @@ export default function AccountProfile() {
             aria-label="Email address"
             defaultValue={customer.email ?? ''}
           />
-          <div className="account-profile-marketing">
+          <div
+            style={hooks({
+              display: 'flex',
+              alignItems: 'center',
+            })}
+          >
             <input
               id="acceptsMarketing"
               name="acceptsMarketing"

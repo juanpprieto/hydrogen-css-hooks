@@ -3,6 +3,7 @@ import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
 import {Link} from '@remix-run/react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/utils';
+import hooks from '../css-hooks';
 
 type CartLine = CartApiQueryFragment['lines']['nodes'][0];
 
@@ -16,13 +17,21 @@ export function CartMain({layout, cart}: CartMainProps) {
   const withDiscount =
     cart &&
     Boolean(cart.discountCodes.filter((code) => code.applicable).length);
-  const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
 
   return (
-    <div className={className}>
+    <section
+      style={hooks({
+        height: '100%',
+        maxHeight: withDiscount
+          ? 'calc(100vh - var(--cart-aside-summary-height-with-discount))'
+          : 'calc(100vh - var(--cart-aside-summary-height))',
+        overflowY: 'auto',
+        width: 'auto',
+      })}
+    >
       <CartEmpty hidden={linesCount} layout={layout} />
       <CartDetails cart={cart} layout={layout} />
-    </div>
+    </section>
   );
 }
 
@@ -30,7 +39,7 @@ function CartDetails({layout, cart}: CartMainProps) {
   const cartHasItems = !!cart && cart.totalQuantity > 0;
 
   return (
-    <div className="cart-details">
+    <div>
       <CartLines lines={cart?.lines} layout={layout} />
       {cartHasItems && (
         <CartSummary cost={cart.cost} layout={layout}>
@@ -74,7 +83,13 @@ function CartLineItem({
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
 
   return (
-    <li key={id} className="cart-line">
+    <li
+      key={id}
+      style={hooks({
+        display: 'flex',
+        padding: '0.75rem 0',
+      })}
+    >
       {image && (
         <Image
           alt={title}
@@ -83,6 +98,11 @@ function CartLineItem({
           height={100}
           loading="lazy"
           width={100}
+          style={hooks({
+            height: '100%',
+            display: 'block',
+            marginRight: '0.75rem',
+          })}
         />
       )}
 
@@ -139,13 +159,32 @@ export function CartSummary({
   cost: CartApiQueryFragment['cost'];
   layout: CartMainProps['layout'];
 }) {
-  const className =
-    layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
-
+  const isCartPage = layout === 'page';
   return (
-    <div aria-labelledby="cart-summary" className={className}>
+    <div
+      aria-labelledby="cart-summary"
+      style={hooks(
+        isCartPage
+          ? {
+              position: 'relative',
+            }
+          : {
+              background: 'white',
+              borderTop: '1px solid var(--color-dark)',
+              bottom: 0,
+              paddingTop: '0.75rem',
+              position: 'absolute',
+              width: 'calc(var(--aside-width) - 40px)',
+            },
+      )}
+    >
       <h4>Totals</h4>
-      <dl className="cart-subtotal">
+      <dl
+        style={hooks({
+          alignItems: 'center',
+          display: 'flex',
+        })}
+      >
         <dt>Subtotal</dt>
         <dd>
           {cost?.subtotalAmount?.amount ? (
@@ -179,7 +218,11 @@ function CartLineQuantity({line}: {line: CartLine}) {
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="cart-line-quantiy">
+    <div
+      style={hooks({
+        display: 'flex',
+      })}
+    >
       <small>Quantity: {quantity} &nbsp;&nbsp;</small>
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
@@ -280,7 +323,13 @@ function CartDiscounts({
         <div>
           <dt>Discount(s)</dt>
           <UpdateDiscountForm>
-            <div className="cart-discount">
+            <div
+              style={hooks({
+                alignItems: 'center',
+                display: 'flex',
+                marginTop: '0.25rem',
+              })}
+            >
               <code>{codes?.join(', ')}</code>
               &nbsp;
               <button>Remove</button>

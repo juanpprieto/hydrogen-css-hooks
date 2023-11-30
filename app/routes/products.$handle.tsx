@@ -26,6 +26,7 @@ import type {
   SelectedOption,
 } from '@shopify/hydrogen/storefront-api-types';
 import {getVariantUrl} from '~/utils';
+import hooks from '../css-hooks';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
@@ -117,29 +118,41 @@ export default function Product() {
   const {product, variants} = useLoaderData<typeof loader>();
   const {selectedVariant} = product;
   return (
-    <div className="product">
+    <section
+      style={hooks({
+        display: 'grid',
+        large: {
+          gridTemplateColumns: '1fr 1fr',
+          gridGap: '4rem',
+        },
+      })}
+    >
       <ProductImage image={selectedVariant?.image} />
       <ProductMain
         selectedVariant={selectedVariant}
         product={product}
         variants={variants}
       />
-    </div>
+    </section>
   );
 }
 
 function ProductImage({image}: {image: ProductVariantFragment['image']}) {
   if (!image) {
-    return <div className="product-image" />;
+    return <div />;
   }
   return (
-    <div className="product-image">
+    <div>
       <Image
         alt={image.altText || 'Product Image'}
         aspectRatio="1/1"
         data={image}
         key={image.id}
         sizes="(min-width: 45em) 50vw, 100vw"
+        style={hooks({
+          height: 'auto',
+          width: '100%',
+        })}
       />
     </div>
   );
@@ -156,8 +169,14 @@ function ProductMain({
 }) {
   const {title, descriptionHtml} = product;
   return (
-    <div className="product-main">
-      <h1>{title}</h1>
+    <div
+      style={hooks({
+        alignSelf: 'start',
+        position: 'sticky',
+        top: '6rem',
+      })}
+    >
+      <h1 style={hooks({marginTop: 0})}>{title}</h1>
       <ProductPrice selectedVariant={selectedVariant} />
       <br />
       <Suspense
@@ -200,14 +219,19 @@ function ProductPrice({
   selectedVariant: ProductFragment['selectedVariant'];
 }) {
   return (
-    <div className="product-price">
+    <div>
       {selectedVariant?.compareAtPrice ? (
         <>
           <p>Sale</p>
           <br />
-          <div className="product-price-on-sale">
+          <div
+            style={hooks({
+              display: 'flex',
+              gridGap: '0.5rem',
+            })}
+          >
             {selectedVariant ? <Money data={selectedVariant.price} /> : null}
-            <s>
+            <s style={hooks({opacity: 0.5})}>
               <Money data={selectedVariant.compareAtPrice} />
             </s>
           </div>
@@ -229,7 +253,7 @@ function ProductForm({
   variants: Array<ProductVariantFragment>;
 }) {
   return (
-    <div className="product-form">
+    <div>
       <VariantSelector
         handle={product.handle}
         options={product.options}
@@ -262,22 +286,28 @@ function ProductForm({
 
 function ProductOptions({option}: {option: VariantOption}) {
   return (
-    <div className="product-options" key={option.name}>
+    <div key={option.name}>
       <h5>{option.name}</h5>
-      <div className="product-options-grid">
+      <div
+        style={hooks({
+          display: 'flex',
+          flexWrap: 'wrap',
+          gridGap: '0.75rem',
+        })}
+      >
         {option.values.map(({value, isAvailable, isActive, to}) => {
           return (
             <Link
-              className="product-options-item"
               key={option.name + value}
               prefetch="intent"
               preventScrollReset
               replace
               to={to}
-              style={{
+              style={hooks({
                 border: isActive ? '1px solid black' : '1px solid transparent',
                 opacity: isAvailable ? 1 : 0.3,
-              }}
+                padding: '0.25rem 0.5rem',
+              })}
             >
               {value}
             </Link>

@@ -8,6 +8,7 @@ import {
 } from '@remix-run/react';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import React, {useRef, useEffect} from 'react';
+import hooks from '../css-hooks';
 
 import type {
   PredictiveProductFragment,
@@ -150,12 +151,21 @@ export function SearchResults({
 
 function SearchResultsProductsGrid({products}: Pick<SearchQuery, 'products'>) {
   return (
-    <div className="search-result">
+    <div
+      style={hooks({
+        marginBottom: '1.5rem',
+      })}
+    >
       <h2>Products</h2>
       <Pagination connection={products}>
         {({nodes, isLoading, NextLink, PreviousLink}) => {
           const itemsMarkup = nodes.map((product) => (
-            <div className="search-results-item" key={product.id}>
+            <div
+              style={hooks({
+                marginBottom: '0.5rem',
+              })}
+              key={product.id}
+            >
               <Link prefetch="intent" to={`/products/${product.handle}`}>
                 <span>{product.title}</span>
               </Link>
@@ -246,7 +256,6 @@ type SearchFromProps = {
 export function PredictiveSearchForm({
   action,
   children,
-  className = 'predictive-search-form',
   method = 'POST',
   ...props
 }: SearchFromProps) {
@@ -275,7 +284,12 @@ export function PredictiveSearchForm({
   return (
     <fetcher.Form
       {...props}
-      className={className}
+      className="predictive-search-form"
+      style={hooks({
+        background: 'var(--color-light)',
+        position: 'sticky',
+        top: 0,
+      })}
       onSubmit={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -365,9 +379,20 @@ function PredictiveSearchResult({
   }&type=${pluralToSingularSearchType(type)}`;
 
   return (
-    <div className="predictive-search-result" key={type}>
+    <div
+      style={hooks({
+        marginBottom: '2rem',
+      })}
+      key={type}
+    >
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
-        <h5>{isSuggestions ? 'Suggestions' : type}</h5>
+        <h5
+          style={hooks({
+            textTransform: 'uppercase',
+          })}
+        >
+          {isSuggestions ? 'Suggestions' : type}
+        </h5>
       </Link>
       <ul>
         {items.map((item: NormalizedPredictiveSearchResultItem) => (
@@ -388,14 +413,30 @@ type SearchResultItemProps = Pick<SearchResultTypeProps, 'goToSearchResult'> & {
 
 function SearchResultItem({goToSearchResult, item}: SearchResultItemProps) {
   return (
-    <li className="predictive-search-result-item" key={item.id}>
-      <Link onClick={goToSearchResult} to={item.url}>
+    <li
+      style={hooks({
+        marginBottom: '0.5rem',
+      })}
+      key={item.id}
+    >
+      <Link
+        onClick={goToSearchResult}
+        to={item.url}
+        style={hooks({
+          alignItems: 'center',
+          display: 'flex',
+        })}
+      >
         {item.image?.url && (
           <Image
             alt={item.image.altText ?? ''}
             src={item.image.url}
             width={50}
             height={50}
+            style={hooks({
+              marginRight: '0.75rem',
+              height: '100%',
+            })}
           />
         )}
         <div>

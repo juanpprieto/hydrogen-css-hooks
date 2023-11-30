@@ -2,6 +2,7 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import type {ArticleItemFragment} from 'storefrontapi.generated';
+import hooks from '../css-hooks';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
@@ -39,9 +40,17 @@ export default function Blog() {
   const {articles} = blog;
 
   return (
-    <div className="blog">
+    <section>
       <h1>{blog.title}</h1>
-      <div className="blog-grid">
+      <div
+        style={hooks({
+          display: 'grid',
+          gridGap: '1.5rem',
+          gridTemplateColumns:
+            'repeat(auto-fit, minmax(var(--grid-item-width), 1fr))',
+          marginBottom: '2rem',
+        })}
+      >
         <Pagination connection={articles}>
           {({nodes, isLoading, PreviousLink, NextLink}) => {
             return (
@@ -66,7 +75,7 @@ export default function Blog() {
           }}
         </Pagination>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -83,23 +92,32 @@ function ArticleItem({
     day: 'numeric',
   }).format(new Date(article.publishedAt!));
   return (
-    <div className="blog-article" key={article.id}>
+    <article key={article.id}>
       <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
         {article.image && (
-          <div className="blog-article-image">
+          <div
+            style={hooks({
+              aspectRatio: '3/2',
+              display: 'block',
+            })}
+          >
             <Image
               alt={article.image.altText || article.title}
               aspectRatio="3/2"
               data={article.image}
               loading={loading}
               sizes="(min-width: 768px) 50vw, 100vw"
+              style={hooks({
+                height: 'auto',
+                width: '100%',
+              })}
             />
           </div>
         )}
         <h3>{article.title}</h3>
         <small>{publishedAt}</small>
       </Link>
-    </div>
+    </article>
   );
 }
 

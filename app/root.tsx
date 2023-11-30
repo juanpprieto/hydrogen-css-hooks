@@ -22,6 +22,7 @@ import favicon from '../public/favicon.svg';
 import resetStyles from './styles/reset.css';
 import appStyles from './styles/app.css';
 import {Layout} from '~/components/Layout';
+import hooks, {css} from './css-hooks';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -118,8 +119,13 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <style id="css-hooks" dangerouslySetInnerHTML={{__html: css}} />
       </head>
-      <body>
+      <body
+        style={hooks({
+          img: {borderRadius: '10px'},
+        })}
+      >
         <Layout {...data}>
           <Outlet />
         </Layout>
@@ -155,7 +161,7 @@ export function ErrorBoundary() {
       </head>
       <body>
         <Layout {...rootData}>
-          <div className="route-error">
+          <div>
             <h1>Oops</h1>
             <h2>{errorStatus}</h2>
             {errorMessage && (

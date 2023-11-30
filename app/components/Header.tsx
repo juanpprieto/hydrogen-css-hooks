@@ -3,6 +3,7 @@ import {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import type {LayoutProps} from './Layout';
 import {useRootLoaderData} from '~/root';
+import hooks from '../css-hooks';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
@@ -11,7 +12,18 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header">
+    <header
+      style={hooks({
+        alignItems: 'center',
+        background: '#fff',
+        display: 'flex',
+        height: 'var(--header-height)',
+        padding: '0 1rem',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1,
+      })}
+    >
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
         <strong>{shop.name}</strong>
       </NavLink>
@@ -35,7 +47,6 @@ export function HeaderMenu({
   viewport: Viewport;
 }) {
   const {publicStoreDomain} = useRootLoaderData();
-  const className = `header-menu-${viewport}`;
 
   function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
     if (viewport === 'mobile') {
@@ -45,7 +56,26 @@ export function HeaderMenu({
   }
 
   return (
-    <nav className={className} role="navigation">
+    <nav
+      style={hooks(
+        viewport === 'mobile'
+          ? {
+              display: 'flex',
+              flexDirection: 'column',
+              gridGap: '1rem',
+            }
+          : {
+              display: 'none',
+              gridGap: '1rem',
+              large: {
+                display: 'flex',
+                gridGap: '1rem',
+                marginLeft: '3rem',
+              },
+            },
+      )}
+      role="navigation"
+    >
       {viewport === 'mobile' && (
         <NavLink
           end
@@ -69,7 +99,6 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="header-menu-item"
             end
             key={item.id}
             onClick={closeAside}
@@ -90,7 +119,15 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
+    <nav
+      style={hooks({
+        alignItems: 'center',
+        display: 'flex',
+        gridGap: '1rem',
+        marginLeft: 'auto',
+      })}
+      role="navigation"
+    >
       <HeaderMenuMobileToggle />
       <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         {isLoggedIn ? 'Account' : 'Sign in'}
@@ -103,7 +140,12 @@ function HeaderCtas({
 
 function HeaderMenuMobileToggle() {
   return (
-    <a className="header-menu-mobile-toggle" href="#mobile-menu-aside">
+    <a
+      style={hooks({
+        large: {display: 'none'},
+      })}
+      href="#mobile-menu-aside"
+    >
       <h3>☰</h3>
     </a>
   );

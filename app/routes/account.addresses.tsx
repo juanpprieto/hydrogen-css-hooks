@@ -219,7 +219,7 @@ export default function Addresses() {
   const {defaultAddress, addresses} = customer;
 
   return (
-    <div className="account-addresses">
+    <div>
       <h2>Addresses</h2>
       <br />
       {!addresses.nodes.length ? (

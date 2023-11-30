@@ -1,13 +1,19 @@
 import {NavLink} from '@remix-run/react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
+import hooks from '../css-hooks';
 
 export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
   return (
-    <footer className="footer">
+    <footer
+      style={hooks({
+        background: 'var(--color-dark)',
+        marginTop: 'auto',
+      })}
+    >
       <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
     </footer>
   );
@@ -23,7 +29,15 @@ function FooterMenu({
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
-    <nav className="footer-menu" role="navigation">
+    <nav
+      style={hooks({
+        alignItems: 'center',
+        display: 'flex',
+        gridGap: '1rem',
+        padding: '1rem',
+      })}
+      role="navigation"
+    >
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain
@@ -103,8 +117,8 @@ function activeLinkStyle({
   isActive: boolean;
   isPending: boolean;
 }) {
-  return {
+  return hooks({
     fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
+    color: isPending ? 'grey' : 'color: var(--color-light)',
+  });
 }

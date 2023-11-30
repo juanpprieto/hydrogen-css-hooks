@@ -2,6 +2,7 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Pagination, getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
+import hooks from '../css-hooks';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
@@ -19,7 +20,7 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collections">
+    <section>
       <h1>Collections</h1>
       <Pagination connection={collections}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
@@ -34,13 +35,21 @@ export default function Collections() {
           </div>
         )}
       </Pagination>
-    </div>
+    </section>
   );
 }
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <div className="collections-grid">
+    <div
+      style={hooks({
+        display: 'grid',
+        gridGap: '1.5rem',
+        gridTemplateColumns:
+          'repeat(auto-fit, minmax(var(--grid-item-width), 1fr))',
+        marginBottom: '2rem',
+      })}
+    >
       {collections.map((collection, index) => (
         <CollectionItem
           key={collection.id}
@@ -61,7 +70,6 @@ function CollectionItem({
 }) {
   return (
     <Link
-      className="collection-item"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
@@ -72,6 +80,7 @@ function CollectionItem({
           aspectRatio="1/1"
           data={collection.image}
           loading={index < 3 ? 'eager' : undefined}
+          style={hooks({height: 'auto'})}
         />
       )}
       <h5>{collection.title}</h5>

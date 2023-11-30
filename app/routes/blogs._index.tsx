@@ -1,6 +1,7 @@
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import hooks from '../css-hooks';
 
 export const meta: MetaFunction = () => {
   return [{title: `Hydrogen | Blogs`}];
@@ -27,9 +28,17 @@ export default function Blogs() {
   const {blogs} = useLoaderData<typeof loader>();
 
   return (
-    <div className="blogs">
+    <section>
       <h1>Blogs</h1>
-      <div className="blogs-grid">
+      <div
+        style={hooks({
+          display: 'grid',
+          gridGap: '1.5rem',
+          gridTemplateColumns:
+            'repeat(auto-fit, minmax(var(--grid-item-width), 1fr))',
+          marginBottom: '2rem',
+        })}
+      >
         <Pagination connection={blogs}>
           {({nodes, isLoading, PreviousLink, NextLink}) => {
             return (
@@ -40,7 +49,6 @@ export default function Blogs() {
                 {nodes.map((blog) => {
                   return (
                     <Link
-                      className="blog"
                       key={blog.handle}
                       prefetch="intent"
                       to={`/blogs/${blog.handle}`}
@@ -57,7 +65,7 @@ export default function Blogs() {
           }}
         </Pagination>
       </div>
-    </div>
+    </section>
   );
 }
 

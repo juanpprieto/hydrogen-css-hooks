@@ -13,6 +13,7 @@ import {
   PredictiveSearchForm,
   PredictiveSearchResults,
 } from '~/components/Search';
+import hooks from '../css-hooks';
 
 export type LayoutProps = {
   cart: Promise<CartApiQueryFragment | null>;
@@ -62,7 +63,12 @@ function CartAside({cart}: {cart: LayoutProps['cart']}) {
 function SearchAside() {
   return (
     <Aside id="search-aside" heading="SEARCH">
-      <div className="predictive-search">
+      <div
+        style={hooks({
+          height: 'calc(100vh - var(--header-height) - 40px)',
+          overflowY: 'auto',
+        })}
+      >
         <br />
         <PredictiveSearchForm>
           {({fetchResults, inputRef}) => (

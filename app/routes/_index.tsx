@@ -6,6 +6,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
+import hooks from '../css-hooks';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -23,10 +24,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
-    <div className="home">
+    <section>
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
-    </div>
+    </section>
   );
 }
 
@@ -39,12 +40,31 @@ function FeaturedCollection({
   const image = collection?.image;
   return (
     <Link
-      className="featured-collection"
+      style={hooks({
+        display: 'block',
+        marginBottom: '2rem',
+        position: 'relative',
+      })}
       to={`/collections/${collection.handle}`}
     >
       {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
+        <div
+          style={hooks({
+            aspectRatio: '1 / 1',
+            large: {
+              aspectRatio: '16 / 9',
+            },
+          })}
+        >
+          <Image
+            style={hooks({
+              height: '100%',
+              maxHeight: '100%',
+              objectFit: 'cover',
+            })}
+            data={image}
+            sizes="100vw"
+          />
         </div>
       )}
       <h1>{collection.title}</h1>
@@ -58,22 +78,30 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery>;
 }) {
   return (
-    <div className="recommended-products">
+    <section>
       <h2>Recommended Products</h2>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {({products}) => (
-            <div className="recommended-products-grid">
+            <div
+              style={hooks({
+                display: 'grid',
+                gridGap: '1.5rem',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                large: {
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                },
+              })}
+            >
               {products.nodes.map((product) => (
-                <Link
-                  key={product.id}
-                  className="recommended-product"
-                  to={`/products/${product.handle}`}
-                >
+                <Link key={product.id} to={`/products/${product.handle}`}>
                   <Image
                     data={product.images.nodes[0]}
                     aspectRatio="1/1"
                     sizes="(min-width: 45em) 20vw, 50vw"
+                    style={hooks({
+                      height: '100%',
+                    })}
                   />
                   <h4>{product.title}</h4>
                   <small>
@@ -86,7 +114,7 @@ function RecommendedProducts({
         </Await>
       </Suspense>
       <br />
-    </div>
+    </section>
   );
 }
 

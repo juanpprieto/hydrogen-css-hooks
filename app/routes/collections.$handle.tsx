@@ -8,6 +8,7 @@ import {
 } from '@shopify/hydrogen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/utils';
+import hooks from '../css-hooks';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -40,9 +41,19 @@ export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
+    <section>
       <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
+      <p
+        style={hooks({
+          marginBottom: '1rem',
+          maxWidth: '95%',
+          large: {
+            maxWidth: '600px',
+          },
+        })}
+      >
+        {collection.description}
+      </p>
       <Pagination connection={collection.products}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
           <>
@@ -57,13 +68,21 @@ export default function Collection() {
           </>
         )}
       </Pagination>
-    </div>
+    </section>
   );
 }
 
 function ProductsGrid({products}: {products: ProductItemFragment[]}) {
   return (
-    <div className="products-grid">
+    <div
+      style={hooks({
+        display: 'grid',
+        gridGap: '1.5rem',
+        gridTemplateColumns:
+          'repeat(auto-fit, minmax(var(--grid-item-width), 1fr))',
+        marginBottom: '2rem',
+      })}
+    >
       {products.map((product, index) => {
         return (
           <ProductItem
@@ -87,12 +106,7 @@ function ProductItem({
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
   return (
-    <Link
-      className="product-item"
-      key={product.id}
-      prefetch="intent"
-      to={variantUrl}
-    >
+    <Link key={product.id} prefetch="intent" to={variantUrl}>
       {product.featuredImage && (
         <Image
           alt={product.featuredImage.altText || product.title}
@@ -100,6 +114,10 @@ function ProductItem({
           data={product.featuredImage}
           loading={loading}
           sizes="(min-width: 45em) 400px, 100vw"
+          style={hooks({
+            height: 'auto',
+            width: '100%',
+          })}
         />
       )}
       <h4>{product.title}</h4>

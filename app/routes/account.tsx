@@ -1,6 +1,7 @@
 import {Form, NavLink, Outlet, useLoaderData} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+import hooks from '../css-hooks';
 
 export function shouldRevalidate() {
   return true;
@@ -150,7 +151,13 @@ function AccountMenu() {
 
 function Logout() {
   return (
-    <Form className="account-logout" method="POST" action="/account/logout">
+    <Form
+      method="POST"
+      action="/account/logout"
+      style={hooks({
+        display: 'inline-block',
+      })}
+    >
       &nbsp;<button type="submit">Sign out</button>
     </Form>
   );
