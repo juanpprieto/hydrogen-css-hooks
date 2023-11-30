@@ -119,6 +119,7 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        {/* Include css-hook styles */}
         <style id="css-hooks" dangerouslySetInnerHTML={{__html: css}} />
       </head>
       <body
@@ -158,6 +159,8 @@ export function ErrorBoundary() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        {/* Include css-hook styles */}
+        <style id="css-hooks" dangerouslySetInnerHTML={{__html: css}} />
       </head>
       <body>
         <Layout {...rootData}>

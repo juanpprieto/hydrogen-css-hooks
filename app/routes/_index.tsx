@@ -97,10 +97,10 @@ function RecommendedProducts({
                 <Link key={product.id} to={`/products/${product.handle}`}>
                   <Image
                     data={product.images.nodes[0]}
-                    aspectRatio="1/1"
+                    aspectRatio="800/450"
                     sizes="(min-width: 45em) 20vw, 50vw"
                     style={hooks({
-                      height: '100%',
+                      height: 'auto',
                     })}
                   />
                   <h4>{product.title}</h4>
